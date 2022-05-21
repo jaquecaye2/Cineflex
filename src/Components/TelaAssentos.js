@@ -2,15 +2,16 @@ import axios from "axios";
 
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Footer from "./Footer";
 import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
+import ClasseAssento from "./shared/ClasseAssento";
 
-function Assentos({assento}){
+function Assentos({assento, idsAssentos, setIdAssentos}){
 
   const [classe, setClasse] = React.useState("")
 
@@ -25,6 +26,16 @@ function Assentos({assento}){
   function alterarClasse(){
     if (classe === "disponivel"){
       setClasse("selecionado")
+      setIdAssentos([...idsAssentos, assento.id])
+    } else if (classe === "selecionado"){
+      setClasse("disponivel")
+      for (let i = 0; i < idsAssentos.length; i++){
+        if (idsAssentos[i] === assento.id){
+          idsAssentos.splice(idsAssentos.indexOf(assento.id), 1);
+        }
+      }
+    } else if (classe === "indisponivel"){
+      alert("Esse assento não está disponível")
     }
   }
 
@@ -40,7 +51,15 @@ export default function TelaAssentos() {
 
   const [filme, setFilme] = React.useState({})
   const [diaFilme, setDiaFIlme] = React.useState({})
+  const [sessao, setSessao] = React.useState({})
   const [assentos, setAssentos] = React.useState([]);
+
+  const [nome, setNome] = React.useState("")
+  const [cpf, setCpf] = React.useState("")
+
+  const [idsAssentos, setIdAssentos] = React.useState([])
+
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     const promise = axios.get(
@@ -49,35 +68,42 @@ export default function TelaAssentos() {
 
     promise.then((response) => {
       setFilme({...response.data.movie})
+      setSessao({...response.data})
       setDiaFIlme({...response.data.day})
       setAssentos([...response.data.seats]);
     });
   }, []);
+
+  function submitForm(event){
+    event.preventDefault();
+    const dados = {
+      ids: idsAssentos,
+      name: nome,
+      cpf
+    }
+
+    const promise = axios.post("https://mock-api.driven.com.br/api/v5/cineflex/seats/book-many", dados)
+
+    promise.then(() => {
+      navigate("/sucesso")
+    })
+  }
 
   return (
     <div className="telaAssentos">
       <Header />
       <TituloTela>Selecione o(s) assento(s)</TituloTela>
       <div className="assentos">
-        {assentos.map((assento, index) => <Assentos key={index} assento={assento}/>)}
+        {assentos.map((assento, index) => <Assentos key={index} assento={assento} idsAssentos={idsAssentos} setIdAssentos={setIdAssentos}/>)}
       </div>
 
       <div className="classificacaoAssentos">
-        <div className="classeAssento">
-          <div className="selecionado"></div>
-          <p>Selecionado</p>
-        </div>
-        <div className="classeAssento">
-          <div className="disponivel"></div>
-          <p>Disponível</p>
-        </div>
-        <div className="classeAssento">
-          <div className="indisponivel"></div>
-          <p>Indisponível</p>
-        </div>
+        <ClasseAssento type="selecionado" name="Selecionado"/>
+        <ClasseAssento type="disponivel" name="Disponível"/>
+        <ClasseAssento type="indisponivel" name="Indisponível"/>
       </div>
 
-      <form>
+      <form onSubmit={submitForm}>
         <div>
           <label htmlFor="nome">Nome do comprador:</label>
           <input
@@ -85,6 +111,9 @@ export default function TelaAssentos() {
             id="nome"
             name="nome"
             placeholder="Digite seu nome..."
+            required
+            onChange={(e) => setNome(e.target.value)}
+            value={nome}
           />
         </div>
         <div>
@@ -94,16 +123,17 @@ export default function TelaAssentos() {
             id="cpf"
             name="cpf"
             placeholder="Digite seu CPF..."
+            required
+            onChange={(e) => setCpf(e.target.value)}
+            value={cpf}
           />
         </div>
         <div className="buttonText">
-          <Link to="/sucesso">
-            <Button>Reservar assento(s)</Button>
-          </Link>
+            <Button type="submit">Reservar assento(s)</Button>
         </div>
       </form>
 
-      <Footer title={filme.title} capa={filme.posterURL} weekday={diaFilme.weekday} date={diaFilme.date}/>
+      <Footer title={filme.title} capa={filme.posterURL} weekday={diaFilme.weekday} sessao={sessao.name}/>
     </div>
   );
 }
