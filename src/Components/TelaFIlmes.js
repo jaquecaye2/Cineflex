@@ -1,51 +1,41 @@
+import axios from "axios";
+import React from "react";
+
 import { Link } from "react-router-dom";
 
 import Header from "./Header";
 import TituloTela from "./shared/TituloTela";
 
-import filme1 from "../assets/images/capa-filme-1.jpg";
-import filme2 from "../assets/images/capa-filme-2.webp";
-import filme3 from "../assets/images/capa-filme-3.jpg";
-import filme4 from "../assets/images/capa-filme-4.jpeg";
-import filme5 from "../assets/images/capa-filme-5.jpg";
-import filme6 from "../assets/images/capa-filme-6.jpg";
+function Filme({ idFilme, poster }) {
+  return (
+    <Link to={`/filme/${idFilme}`}>
+      <div className="capaFilme">
+        <img src={poster} alt="capa filme" />
+      </div>
+    </Link>
+  );
+}
 
 export default function TelaFilmes() {
+
+  const [filmes, setFilmes] = React.useState([]);
+
+  React.useEffect(() => {
+    const promise = axios.get("https://mock-api.driven.com.br/api/v5/cineflex/movies")
+
+    promise.then(response => {
+        setFilmes([...response.data])
+    })
+  }, [])
+
   return (
     <div className="telaFilmes">
       <Header />
       <TituloTela>Selecione o filme</TituloTela>
       <div className="caixaFilmes">
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme1} alt="capa filme" />
-            </div>
-        </Link>
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme2} alt="capa filme" />
-            </div>
-        </Link>
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme3} alt="capa filme" />
-            </div>
-        </Link>
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme4} alt="capa filme" />
-            </div>
-        </Link>
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme5} alt="capa filme" />
-            </div>
-        </Link>
-        <Link to="/filme">
-            <div className="capaFilme">
-              <img src={filme6} alt="capa filme" />
-            </div>
-        </Link>
+        {filmes.map((filme, index) => (
+          <Filme key={index} idFilme={filme.id} poster={filme.posterURL} />
+        ))}
       </div>
     </div>
   );

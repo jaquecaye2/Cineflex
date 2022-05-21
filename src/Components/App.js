@@ -10,8 +10,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<TelaFilmes />} />
-        <Route path="/filme" element={<TelaHorarios />} />
-        <Route path="/sessao" element={<TelaAssentos />} />
+        <Route path="/filme/:idFilme" element={<TelaHorarios />} />
+        <Route path="/sessao/:idSessao" element={<TelaAssentos />} />
         <Route path="/sucesso" element={<TelaPedido />} />
       </Routes>
     </BrowserRouter>

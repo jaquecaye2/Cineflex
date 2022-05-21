@@ -1,42 +1,65 @@
+import axios from "axios";
+
+import React from "react";
+
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Header from "./Header";
+import Footer from "./Footer";
 import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
 
-import filme1 from "../assets/images/capa-filme-1.jpg"
+function Horario({showtimes}) {
+  return (
+    <Link to={`/sessao/${showtimes.id}`}>
+      <Button>{showtimes.name}</Button>
+    </Link>
+  );
+}
+
+function OpcaoSessao({ day }) {
+  return (
+    <div className="opcaoHorario">
+      <p>
+        {day.weekday} - {day.date}
+      </p>
+      <div className="horarios">
+        {day.showtimes.map((showtimes, index) => <Horario key={index} showtimes={showtimes}/>)}
+      </div>
+    </div>
+  );
+}
 
 export default function TelaHorarios() {
+  const { idFilme } = useParams();
+
+  const [sessoes, setSessoes] = React.useState({});
+  const [days, setDays] = React.useState([]);
+
+  React.useEffect(() => {
+    const promise = axios.get(
+      `https://mock-api.driven.com.br/api/v5/cineflex/movies/${idFilme}/showtimes`
+    );
+
+    promise.then((response) => {
+      setSessoes({ ...response.data });
+      setDays([...response.data.days]);
+    });
+  }, []);
+
   return (
     <div className="telaHorarios">
       <Header />
       <TituloTela>Selecione o horário</TituloTela>
       <div className="opcoesHorarios">
         <div className="opcaoHorario">
-          <p>Quinta-feira - 24/06/2021</p>
-          <div className="horarios">
-            <Link to="/sessao"><Button>15:00</Button></Link>
-            <Link to="/sessao"><Button>19:00</Button></Link>
-          </div>
-        </div>
-        <div className="opcaoHorario">
-          <p>Sexta-feira - 25/06/2021</p>
-          <div className="horarios">
-            <Link to="/sessao"><Button>15:00</Button></Link>
-            <Link to="/sessao"><Button>19:00</Button></Link>
-          </div>
+          {days.map((day, index) => (
+            <OpcaoSessao key={index} day={day} />
+          ))}
         </div>
       </div>
-      <div className="footer">
-        <div className="filmeSelecionado">
-          <div>
-            <img src={filme1} alt="capa filme" />
-          </div>
-        </div>
-        <div className="tituloFilmeSelecionado">
-          <h3>A menina que roubava livros</h3>
-        </div>
-      </div>
+      <Footer title={sessoes.title} capa={sessoes.posterURL}/>
     </div>
   );
 }

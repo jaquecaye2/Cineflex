@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 
 import Header from "./Header";
+import Footer from "./Footer";
 import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
-
-import filme1 from "../assets/images/capa-filme-1.jpg"
 
 export default function TelaAssentos() {
   let listaAssentos = [];
@@ -39,7 +38,6 @@ export default function TelaAssentos() {
         </div>
       </div>
 
-      {/*CONTINUAR O FORM*/}
       <form>
         <div>
           <label for="nome">Nome do comprador:</label>
@@ -64,18 +62,7 @@ export default function TelaAssentos() {
         </div>
       </form>
 
-      {/*FAZER UM COMPONENTE FOOTER */}
-      <div className="footer">
-        <div className="filmeSelecionado">
-          <div>
-            <img src={filme1} alt="capa filme" />
-          </div>
-        </div>
-        <div className="tituloFilmeSelecionado">
-          <h3>A menina que roubava livros</h3>
-          <h3>Quinta-feira - 24/06/2021</h3>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }
