@@ -1,28 +1,67 @@
+import axios from "axios";
+
+import React from "react";
+
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Header from "./Header";
 import Footer from "./Footer";
 import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
 
-export default function TelaAssentos() {
-  let listaAssentos = [];
+function Assentos({assento}){
 
-  for (let i = 1; i <= 50; i++) {
-    listaAssentos.push(i);
+  const [classe, setClasse] = React.useState("")
+
+  React.useEffect(() => {
+    if (assento.isAvailable === false){
+      setClasse("indisponivel")
+    } else {
+      setClasse("disponivel")
+    }
+  }, [])
+
+  function alterarClasse(){
+    if (classe === "disponivel"){
+      setClasse("selecionado")
+    }
   }
+
+  return(
+      <div className={classe} onClick={alterarClasse}>
+        <p>{assento.name}</p>
+      </div>
+  )
+}
+
+export default function TelaAssentos() {
+  const { idSessao } = useParams();
+
+  const [filme, setFilme] = React.useState({})
+  const [diaFilme, setDiaFIlme] = React.useState({})
+  const [assentos, setAssentos] = React.useState([]);
+
+  React.useEffect(() => {
+    const promise = axios.get(
+      `https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${idSessao}/seats`
+    );
+
+    promise.then((response) => {
+      setFilme({...response.data.movie})
+      setDiaFIlme({...response.data.day})
+      setAssentos([...response.data.seats]);
+    });
+  }, []);
 
   return (
     <div className="telaAssentos">
       <Header />
       <TituloTela>Selecione o(s) assento(s)</TituloTela>
       <div className="assentos">
-        {listaAssentos.map((a) => (
-          <div className="disponivel">
-            <p>{a}</p>
-          </div>
-        ))}
+        {assentos.map((assento, index) => <Assentos key={index} assento={assento}/>)}
       </div>
+
       <div className="classificacaoAssentos">
         <div className="classeAssento">
           <div className="selecionado"></div>
@@ -40,7 +79,7 @@ export default function TelaAssentos() {
 
       <form>
         <div>
-          <label for="nome">Nome do comprador:</label>
+          <label htmlFor="nome">Nome do comprador:</label>
           <input
             type="text"
             id="nome"
@@ -49,7 +88,7 @@ export default function TelaAssentos() {
           />
         </div>
         <div>
-          <label for="cpf">CPF do comprador:</label>
+          <label htmlFor="cpf">CPF do comprador:</label>
           <input
             type="text"
             id="cpf"
@@ -58,11 +97,13 @@ export default function TelaAssentos() {
           />
         </div>
         <div className="buttonText">
-          <Link to="/sucesso"><Button>Reservar assento(s)</Button></Link>
+          <Link to="/sucesso">
+            <Button>Reservar assento(s)</Button>
+          </Link>
         </div>
       </form>
 
-      <Footer />
+      <Footer title={filme.title} capa={filme.posterURL} weekday={diaFilme.weekday} date={diaFilme.date}/>
     </div>
   );
 }

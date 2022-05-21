@@ -1,4 +1,4 @@
-export default function Footer({title, capa}) {
+export default function Footer({title, capa, weekday, date}) {
   return (
     <div className="footer">
       <div className="filmeSelecionado">
@@ -8,8 +8,9 @@ export default function Footer({title, capa}) {
       </div>
       <div className="tituloFilmeSelecionado">
         <h3>{title}</h3>
-        <h3></h3>
+        <h3>{(weekday && date) ? `${weekday} - ${date}` : ""}</h3>
       </div>
     </div>
   );
 }
+ 
