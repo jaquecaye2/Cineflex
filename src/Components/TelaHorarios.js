@@ -10,7 +10,7 @@ import Footer from "./Footer";
 import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
 
-function Horario({showtimes}) {
+function Horario({ showtimes }) {
   return (
     <Link to={`/sessao/${showtimes.id}`}>
       <Button>{showtimes.name}</Button>
@@ -25,7 +25,9 @@ function OpcaoSessao({ day }) {
         {day.weekday} - {day.date}
       </p>
       <div className="horarios">
-        {day.showtimes.map((showtimes, index) => <Horario key={index} showtimes={showtimes}/>)}
+        {day.showtimes.map((showtimes, index) => (
+          <Horario key={index} showtimes={showtimes} />
+        ))}
       </div>
     </div>
   );
@@ -54,12 +56,14 @@ export default function TelaHorarios() {
       <TituloTela>Selecione o horário</TituloTela>
       <div className="opcoesHorarios">
         <div className="opcaoHorario">
-          {days.map((day, index) => (
-            <OpcaoSessao key={index} day={day} />
-          ))}
+          {days.length === 0 ? (
+            <img src="https://c.tenor.com/wfEN4Vd_GYsAAAAC/loading.gif" />
+          ) : (
+            days.map((day, index) => <OpcaoSessao key={index} day={day} />)
+          )}
         </div>
       </div>
-      <Footer title={sessoes.title} capa={sessoes.posterURL}/>
+      <Footer title={sessoes.title} capa={sessoes.posterURL} />
     </div>
   );
 }
