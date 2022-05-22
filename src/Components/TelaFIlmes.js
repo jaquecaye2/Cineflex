@@ -1,5 +1,6 @@
 import axios from "axios";
 import React from "react";
+import styled from "styled-components";
 
 import { Link } from "react-router-dom";
 
@@ -9,9 +10,9 @@ import TituloTela from "./shared/TituloTela";
 function Filme({ idFilme, poster }) {
   return (
     <Link to={`/filme/${idFilme}`}>
-      <div className="capaFilme">
+      <CapaFilme>
         <img src={poster} alt="capa filme" />
-      </div>
+      </CapaFilme>
     </Link>
   );
 }
@@ -30,10 +31,10 @@ export default function TelaFilmes() {
   }, []);
 
   return (
-    <div className="telaFilmes">
+    <TelaFilmesStyle>
       <Header />
       <TituloTela>Selecione o filme</TituloTela>
-      <div className="caixaFilmes">
+      <CaixaFilmes>
         {filmes.length === 0 ? (
           <img src="https://c.tenor.com/wfEN4Vd_GYsAAAAC/loading.gif" />
         ) : (
@@ -41,7 +42,42 @@ export default function TelaFilmes() {
             <Filme key={index} idFilme={filme.id} poster={filme.posterURL} />
           ))
         )}
-      </div>
-    </div>
+      </CaixaFilmes>
+    </TelaFilmesStyle>
   );
 }
+
+const TelaFilmesStyle = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  margin-top: 67px;
+`;
+
+const CaixaFilmes = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 0 20px;
+  margin-bottom: 75px;
+`;
+
+const CapaFilme = styled.div`
+  width: 129px;
+  height: 193px;
+  margin: 8px;
+  border-radius: 5px;
+
+  &:hover {
+    cursor: pointer;
+    filter: brightness(0.6);
+  }
+
+  img {
+    width: 129px;
+    height: 193px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+`;

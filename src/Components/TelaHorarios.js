@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import styled from "styled-components";
 import React from "react";
 
 import { Link } from "react-router-dom";
@@ -20,16 +20,16 @@ function Horario({ showtimes }) {
 
 function OpcaoSessao({ day }) {
   return (
-    <div className="opcaoHorario">
+    <OpcaoHorario>
       <p>
         {day.weekday} - {day.date}
       </p>
-      <div className="horarios">
+      <div>
         {day.showtimes.map((showtimes, index) => (
           <Horario key={index} showtimes={showtimes} />
         ))}
       </div>
-    </div>
+    </OpcaoHorario>
   );
 }
 
@@ -53,14 +53,14 @@ export default function TelaHorarios() {
   localStorage.setItem("idFilme", idFilme);
 
   return (
-    <div className="telaHorarios">
+    <TelaHorariosStyle>
       <Link to="/">
-        <div className="voltar"><Button>Voltar</Button></div>
+      <div className="voltar"><Button>Voltar</Button></div>
       </Link>
       <Header />
       <TituloTela>Selecione o horário</TituloTela>
       <div className="opcoesHorarios">
-        <div className="opcaoHorario">
+        <div>
           {days.length === 0 ? (
             <img src="https://c.tenor.com/wfEN4Vd_GYsAAAAC/loading.gif" />
           ) : (
@@ -69,6 +69,26 @@ export default function TelaHorarios() {
         </div>
       </div>
       <Footer title={sessoes.title} capa={sessoes.posterURL} />
-    </div>
+    </TelaHorariosStyle>
   );
 }
+
+const TelaHorariosStyle = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  margin-top: 67px;
+
+  .opcoesHorarios {
+    margin: 0 25px 210px 25px;
+  }
+`;
+
+const OpcaoHorario = styled.div`
+  margin-bottom: 25px;
+
+  p {
+    margin-bottom: 25px;
+    font-size: 20px;
+  }
+`;

@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 
 import Header from "./Header";
@@ -20,42 +21,74 @@ export default function TelaPedido() {
 
   function voltarHome() {
     navigate("/");
-    nomeFilme = ""
-    dia = ""
-    hora = ""
-    assentos = ""
-    nomeComprador = ""
-    cpfComprador = ""
+    nomeFilme = "";
+    dia = "";
+    hora = "";
+    assentos = "";
+    nomeComprador = "";
+    cpfComprador = "";
   }
 
   return (
-    <div className="telaPedido">
+    <TelaPedidoStyle>
       <Link to={`/sessao/${idSessao}`}>
-        <div className="voltar"><Button>Voltar</Button></div>
+        <div className="voltar">
+          <Button>Voltar</Button>
+        </div>
       </Link>
       <Header />
       <h4>Pedido feito com sucesso!</h4>
-      <div className="escolha">
+      <Escolha>
         <h5>Filme e sessão</h5>
         <p>{nomeFilme}</p>
         <p>
           {dia} {hora}
         </p>
-      </div>
-      <div className="escolha">
+      </Escolha>
+      <Escolha>
         <h5>Ingressos</h5>
         {arrayAssentos.map((assento, index) => (
           <p key={index}>Assento {assento}</p>
         ))}
-      </div>
-      <div className="escolha">
+      </Escolha>
+      <Escolha>
         <h5>Comprador</h5>
         <p>Nome: {nomeComprador}</p>
         <p>CPF: {cpfComprador}</p>
-      </div>
+      </Escolha>
       <div className="buttonText" onClick={voltarHome}>
         <Button>Voltar pra Home</Button>
       </div>
-    </div>
+    </TelaPedidoStyle>
   );
 }
+
+const TelaPedidoStyle = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  margin-top: 67px;
+
+  h4 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #247a6b;
+    margin: 35px 70px;
+  }
+`;
+
+const Escolha = styled.div`
+  margin: 15px 28px;
+
+  h5 {
+    font-weight: bold;
+    line-height: 35px;
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 22px;
+    line-height: 28px;
+  }
+`;

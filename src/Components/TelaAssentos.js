@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import styled from "styled-components";
 import React from "react";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -11,7 +11,13 @@ import TituloTela from "./shared/TituloTela";
 import Button from "./shared/Button";
 import ClasseAssento from "./shared/ClasseAssento";
 
-function Assentos({ assento, idsAssentos, setIdAssentos, assentosReservados, setAssentosReservados }) {
+function Assentos({
+  assento,
+  idsAssentos,
+  setIdAssentos,
+  assentosReservados,
+  setAssentosReservados,
+}) {
   const [classe, setClasse] = React.useState("");
 
   React.useEffect(() => {
@@ -26,13 +32,16 @@ function Assentos({ assento, idsAssentos, setIdAssentos, assentosReservados, set
     if (classe === "disponivel") {
       setClasse("selecionado");
       setIdAssentos([...idsAssentos, assento.id]);
-      setAssentosReservados([...assentosReservados, assento.name])
+      setAssentosReservados([...assentosReservados, assento.name]);
     } else if (classe === "selecionado") {
       setClasse("disponivel");
       for (let i = 0; i < idsAssentos.length; i++) {
         if (idsAssentos[i] === assento.id) {
           idsAssentos.splice(idsAssentos.indexOf(assento.id), 1);
-          assentosReservados.splice(assentosReservados.indexOf(assento.name), 1)
+          assentosReservados.splice(
+            assentosReservados.indexOf(assento.name),
+            1
+          );
         }
       }
     } else if (classe === "indisponivel") {
@@ -61,7 +70,7 @@ export default function TelaAssentos() {
   const [cpf, setCpf] = React.useState("");
 
   const [idsAssentos, setIdAssentos] = React.useState([]);
-  const [assentosReservados, setAssentosReservados] = React.useState([])
+  const [assentosReservados, setAssentosReservados] = React.useState([]);
 
   const navigate = useNavigate();
 
@@ -78,8 +87,8 @@ export default function TelaAssentos() {
     });
   }, []);
 
-  localStorage.setItem("idSessao", idSessao)
-  
+  localStorage.setItem("idSessao", idSessao);
+
   function submitForm(event) {
     event.preventDefault();
     const dados = {
@@ -105,13 +114,13 @@ export default function TelaAssentos() {
   }
 
   return (
-    <div className="telaAssentos">
+    <TelaAssentosStyle>
       <Link to={`/filme/${idFilme}`}>
-        <div className="voltar"><Button>Voltar</Button></div>
+      <div className="voltar"><Button>Voltar</Button></div>
       </Link>
       <Header />
       <TituloTela>Selecione o(s) assento(s)</TituloTela>
-      <div className="assentos">
+      <AssentosStyle>
         {assentos.length === 0 ? (
           <img src="https://c.tenor.com/wfEN4Vd_GYsAAAAC/loading.gif" />
         ) : (
@@ -126,15 +135,15 @@ export default function TelaAssentos() {
             />
           ))
         )}
-      </div>
+      </AssentosStyle>
 
-      <div className="classificacaoAssentos">
+      <ClassificacaoAssentos>
         <ClasseAssento type="selecionado" name="Selecionado" />
         <ClasseAssento type="disponivel" name="Disponível" />
         <ClasseAssento type="indisponivel" name="Indisponível" />
-      </div>
+      </ClassificacaoAssentos>
 
-      <form onSubmit={submitForm}>
+      <Form onSubmit={submitForm}>
         <div>
           <label htmlFor="nome">Nome do comprador:</label>
           <input
@@ -162,7 +171,7 @@ export default function TelaAssentos() {
         <div className="buttonText">
           <Button type="submit">Reservar assento(s)</Button>
         </div>
-      </form>
+      </Form>
 
       <Footer
         title={filme.title}
@@ -170,6 +179,74 @@ export default function TelaAssentos() {
         weekday={diaFilme.weekday}
         sessao={sessao.name}
       />
-    </div>
+    </TelaAssentosStyle>
   );
 }
+
+const TelaAssentosStyle = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  margin-top: 67px;
+`;
+
+const AssentosStyle = styled.div`
+  margin: 0 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  p {
+    font-size: 12px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 35px;
+    margin: 9px 5px;
+  }
+
+  div:hover {
+    cursor: pointer;
+    filter: brightness(0.6);
+  }
+`;
+
+const ClassificacaoAssentos = styled.div`
+  margin: 20px 56px 0px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Form = styled.form`
+  margin: 45px 25px 220px 25px;
+
+  div {
+    margin-bottom: 7px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    height: 51px;
+    border: 1px solid #d4d4d4;
+    font-size: 18px;
+    color: #afafaf;
+    padding: 0 18px;
+    font-style: italic;
+    margin-bottom: 10px;
+    border-radius: 3px;
+  }
+`;
