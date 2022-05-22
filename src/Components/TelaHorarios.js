@@ -50,8 +50,13 @@ export default function TelaHorarios() {
     });
   }, []);
 
+  localStorage.setItem("idFilme", idFilme);
+
   return (
     <div className="telaHorarios">
+      <Link to="/">
+        <div className="voltar"><Button>Voltar</Button></div>
+      </Link>
       <Header />
       <TituloTela>Selecione o horário</TituloTela>
       <div className="opcoesHorarios">

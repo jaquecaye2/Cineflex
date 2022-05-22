@@ -2,7 +2,7 @@ import axios from "axios";
 
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import Header from "./Header";
@@ -48,6 +48,8 @@ function Assentos({ assento, idsAssentos, setIdAssentos, assentosReservados, set
 }
 
 export default function TelaAssentos() {
+  let idFilme = localStorage.getItem("idFilme");
+
   const { idSessao } = useParams();
 
   const [filme, setFilme] = React.useState({});
@@ -76,6 +78,8 @@ export default function TelaAssentos() {
     });
   }, []);
 
+  localStorage.setItem("idSessao", idSessao)
+  
   function submitForm(event) {
     event.preventDefault();
     const dados = {
@@ -102,6 +106,9 @@ export default function TelaAssentos() {
 
   return (
     <div className="telaAssentos">
+      <Link to={`/filme/${idFilme}`}>
+        <div className="voltar"><Button>Voltar</Button></div>
+      </Link>
       <Header />
       <TituloTela>Selecione o(s) assento(s)</TituloTela>
       <div className="assentos">

@@ -40,6 +40,14 @@ div.header{
 
 div.header h1{
     font-size: 34px;
+    text-decoration: none;
+}
+
+div.voltar{
+    position: fixed;
+    left: 10px;
+    top: 13px;
+    z-index: 1;
 }
 
 div.telaFilmes{

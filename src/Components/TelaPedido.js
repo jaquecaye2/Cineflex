@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 import Button from "./shared/Button";
@@ -14,6 +14,8 @@ export default function TelaPedido() {
   let arrayAssentos = assentos.split(",");
   arrayAssentos.sort((a, b) => a - b);
 
+  let idSessao = localStorage.getItem("idSessao");
+
   const navigate = useNavigate();
 
   function voltarHome() {
@@ -28,6 +30,9 @@ export default function TelaPedido() {
 
   return (
     <div className="telaPedido">
+      <Link to={`/sessao/${idSessao}`}>
+        <div className="voltar"><Button>Voltar</Button></div>
+      </Link>
       <Header />
       <h4>Pedido feito com sucesso!</h4>
       <div className="escolha">
